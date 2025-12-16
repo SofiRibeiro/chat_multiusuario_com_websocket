@@ -63,9 +63,12 @@ No arquivo servidor.py, é possível ajustar:
 - **PORT:** Porta WebSocket (padrão: 5000)
 - **HISTORY_SIZE:** Quantidade de mensagens mantidas no histórico (padrão: 100)
 
-### Interface Gráfica
+## 🎁 Interface Gráfica
 
-Como um bônus, implementamos uma página html interativa para não ficarmos apenas no terminal. Usamos WebSockets com JavaScript embutido no html. Nada de outro mundo, só seguimos o mesmo fluxo do que escrevemos em python, transferindo toda as regras de comunicação(Ex: Comandos de SEND, CONNECT, DISCONNECT) para o script python. Usamos o JS apenas para abrir comunicação com o servidor.py.
+Como um bônus, implementamos uma página html interativa como alternativa para o terminal. Usamos WebSockets com JavaScript embutido no html. Seguimos o mesmo fluxo do que escrevemos em python, transferindo toda as regras de comunicação (comandos de SEND, CONNECT, DISCONNECT) para o script python. Usamos o JS apenas para abrir comunicação com o servidor.py.
+
+<img width="1418" height="806" alt="Captura de Tela 2025-12-16 às 13 38 27" src="https://github.com/user-attachments/assets/8faf21f7-51be-48ae-a146-d8c78f55c3d6" />
+
 
 ### Como rodar a interface?
 
@@ -80,8 +83,7 @@ Em seguida, sirva o html com os dados do servidor:
 ```
 python3 -m http.server 8000 -d frontend
 ```
-
-Caso a porta 8000 esteja em utilização, pode trocar para uma disponível.
+Após isso, é só abrir a página no navegador (http://localhost:8000). Caso a porta 8000 esteja em utilização, pode trocar para uma disponível.
 
 ## 👥 Autores — Equipe 11
 Jorge Guilherme
