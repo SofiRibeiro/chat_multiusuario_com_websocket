@@ -42,10 +42,9 @@ async def handle_client(websocket):
 
                 # Envia histórico para quem entrou
                 if message_history:
-                    hist = "\n--- Histórico das últimas mensagens ---\n"
+                    hist = "\n--- Histórico das últimas mensagens --- \n"
                     for m in message_history:
                         hist += m + "\n"
-                    hist += "---------------------------------------"
                     await websocket.send(hist)
 
                 # Avisar os outros usuários

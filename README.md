@@ -24,6 +24,8 @@ Quando um cliente envia o comando de conexão (`CONNECT <nome>`), o servidor env
   pip install websockets
   ```
 
+Obs: Aconselho utilizar *venv* para evitar conflitos.
+
 ### 🖥️ Iniciando o Servidor
 No terminal execute:
 
@@ -60,6 +62,26 @@ No arquivo servidor.py, é possível ajustar:
 - **HOST:** Endereço IP do servidor (padrão: 'localhost')
 - **PORT:** Porta WebSocket (padrão: 5000)
 - **HISTORY_SIZE:** Quantidade de mensagens mantidas no histórico (padrão: 100)
+
+### Interface Gráfica
+
+Como um bônus, implementamos uma página html interativa para não ficarmos apenas no terminal. Usamos WebSockets com JavaScript embutido no html. Nada de outro mundo, só seguimos o mesmo fluxo do que escrevemos em python, transferindo toda as regras de comunicação(Ex: Comandos de SEND, CONNECT, DISCONNECT) para o script python. Usamos o JS apenas para abrir comunicação com o servidor.py.
+
+### Como rodar a interface?
+
+Execute o servidor normalmente
+
+```
+python3 servidor.py
+```
+
+Em seguida, sirva o html com os dados do servidor:
+
+```
+python3 -m http.server 8000 -d frontend
+```
+
+Caso a porta 8000 esteja em utilização, pode trocar para uma disponível.
 
 ## 👥 Autores — Equipe 11
 Jorge Guilherme

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat dos Aprovados</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: linear-gradient(135deg, #0f172a, #0b1d34);
+      --panel: #0f223d;
+      --accent: #3bc9db;
+      --accent-strong: #17a2b8;
+      --text: #e5ecf5;
+      --muted: #9fb3c8;
+      --danger: #f56565;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+      color: var(--text);
+      padding: 32px 16px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 920px;
+      background: var(--panel);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 18px 20px;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0.5px;
+    }
+
+    .header .status {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .panel {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input, button, textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(59, 201, 219, 0.15);
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      border: none;
+      color: #0b1220;
+      font-weight: 600;
+    }
+
+    button.secondary {
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    button.danger {
+      background: var(--danger);
+      color: #0b1220;
+      border: none;
+    }
+
+    button:disabled, input:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .connect-form { display: grid; gap: 10px; }
+    .connect-form .row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+    .chat-panel {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 12px;
+      height: 520px;
+    }
+
+    .messages {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 12px;
+      overflow-y: auto;
+      font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+      line-height: 1.45;
+      scroll-behavior: smooth;
+    }
+
+    .msg { margin-bottom: 10px; }
+    .msg strong { color: var(--accent); }
+    .msg.system { color: var(--muted); }
+
+    .input-row { display: grid; grid-template-columns: 1fr 110px; gap: 8px; }
+
+    .footer-hint {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: right;
+      margin-top: -6px;
+    }
+
+    @media (max-width: 860px) {
+      .content { grid-template-columns: 1fr; }
+      .chat-panel { height: 460px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h1>Chat da Aprovação</h1>
+      <div class="status" id="status">Desconectado</div>
+    </div>
+
+    <div class="content">
+      <div class="panel">
+        <h3>Conexão</h3>
+        <form id="connectForm" class="connect-form">
+          <div class="row">
+            <div>
+              <label for="host">Host</label>
+              <input id="host" value="localhost" required>
+            </div>
+            <div>
+              <label for="port">Porta</label>
+              <input id="port" value="5000" required>
+            </div>
+          </div>
+          <div>
+            <label for="username">Nome</label>
+            <input id="username" placeholder="ex: David" required>
+          </div>
+          <div class="row">
+            <button type="submit" id="connectBtn">Conectar</button>
+            <button type="button" class="danger" id="disconnectBtn" disabled>Desconectar</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel chat-panel">
+        <div id="messages" class="messages"></div>
+        <form id="messageForm" class="input-row">
+          <input id="messageInput" placeholder="Digite e envie" autocomplete="off" required>
+          <button type="submit" id="sendBtn" disabled>Enviar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const connectForm = document.getElementById('connectForm');
+    const messageForm = document.getElementById('messageForm');
+    const hostInput = document.getElementById('host');
+    const portInput = document.getElementById('port');
+    const usernameInput = document.getElementById('username');
+    const messageInput = document.getElementById('messageInput');
+    const messagesEl = document.getElementById('messages');
+    const connectBtn = document.getElementById('connectBtn');
+    const disconnectBtn = document.getElementById('disconnectBtn');
+    const sendBtn = document.getElementById('sendBtn');
+
+    let socket = null;
+
+    function setConnected(connected) {
+      hostInput.disabled = connected;
+      portInput.disabled = connected;
+      usernameInput.disabled = connected;
+      connectBtn.disabled = connected;
+      disconnectBtn.disabled = !connected;
+      sendBtn.disabled = !connected;
+      statusEl.textContent = connected ? 'Conectado' : 'Desconectado';
+      statusEl.style.color = connected ? '#3bc9db' : '#9fb3c8';
+    }
+
+    function addMessage(text, kind = 'user') {
+      const div = document.createElement('div');
+      div.className = kind === 'system' ? 'msg system' : 'msg';
+
+      const parts = text.split('\n');
+      parts.forEach((part, idx) => {
+        div.appendChild(document.createTextNode(part));
+        if (idx < parts.length - 1) {
+          div.appendChild(document.createElement('br'));
+        }
+      });
+
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function connect(host, port, username) {
+      const url = `ws://${host}:${port}`;
+      addMessage(`Conectando a ${url}...`, 'system');
+
+      socket = new WebSocket(url);
+
+      socket.addEventListener('open', () => {
+        setConnected(true);
+        socket.send(`CONNECT ${username}`);
+        addMessage('Sessão iniciada. Digite para enviar.', 'system');
+      });
+
+      socket.addEventListener('message', (event) => {
+        addMessage(event.data, 'user');
+      });
+
+      socket.addEventListener('close', () => {
+        setConnected(false);
+        addMessage('Conexão encerrada.', 'system');
+        socket = null;
+      });
+
+      socket.addEventListener('error', () => {
+        addMessage('Erro na conexão WebSocket.', 'system');
+      });
+    }
+
+    connectForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (socket) return;
+      const host = hostInput.value.trim();
+      const port = portInput.value.trim();
+      const username = usernameInput.value.trim();
+      if (!host || !port || !username) return;
+      connect(host, port, username);
+    });
+
+    disconnectBtn.addEventListener('click', () => {
+      if (!socket) return;
+      socket.send('DISCONNECT');
+      socket.close();
+    });
+
+    messageForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!socket) return;
+      const text = messageInput.value.trim();
+      if (!text) return;
+      socket.send(`SEND ${text}`);
+      addMessage(`Você: ${text}`);
+      messageInput.value = '';
+    });
+
+    setConnected(false);
+  </script>
+</body>
+</html>
